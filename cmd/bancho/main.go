@@ -3,20 +3,23 @@ package main
 import (
 	"bancho"
 	"log"
-	"net/http"
-	"time"
+
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 func main() {
-	router := bancho.Router()
+	var err error
 
-	server := &http.Server{
-		Handler: router,
-		Addr:    "127.0.0.1:8000",
-
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
+	config, err := bancho.GetConfig()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	log.Fatal(server.ListenAndServe())
+	server, err := bancho.NewInstance(&config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	server.Run()
 }
