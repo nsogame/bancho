@@ -5,14 +5,13 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
 
 type Bancho struct {
 	config *Config
 	db     *gorm.DB
-	router *mux.Router
+	router http.Handler
 }
 
 func NewInstance(config *Config) (bancho *Bancho, err error) {
@@ -23,7 +22,7 @@ func NewInstance(config *Config) (bancho *Bancho, err error) {
 	}
 
 	// router
-	router := Router()
+	router := handler()
 
 	bancho = &Bancho{
 		config: config,
