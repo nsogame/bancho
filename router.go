@@ -1,10 +1,11 @@
 package bancho
 
 import (
+	"bancho/handlers"
 	"net/http"
 	"os"
 
-	"github.com/gorilla/handlers"
+	gorrilaHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -15,11 +16,16 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	header.Set("connection", "keep-alive")
 	header.Set("keep-alive", "timeout=5, max=100")
 	header.Set("content-type", "text/html; charset=utf-8")
+
+	if r.Header.Get("osu-token") == "" && r.Header.Get("user-agent") == "osu!" {
+		handlers.LoginHandler(w, r)
+		return
+	}
 }
 
 func handler() (router http.Handler) {
 	r := mux.NewRouter()
 	r.HandleFunc("/", IndexHandler)
-	router = handlers.LoggingHandler(os.Stdout, r)
+	router = gorrilaHandlers.LoggingHandler(os.Stdout, r)
 	return
 }
