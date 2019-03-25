@@ -1,8 +1,9 @@
 package main
 
 import (
-	"bancho"
 	"log"
+
+	"git.iptq.io/nso/bancho"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"

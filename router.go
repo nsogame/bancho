@@ -1,9 +1,10 @@
 package bancho
 
 import (
-	"bancho/handlers"
 	"net/http"
 	"os"
+
+	"git.iptq.io/nso/bancho/handlers"
 
 	gorrilaHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
