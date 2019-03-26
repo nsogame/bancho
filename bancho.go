@@ -5,12 +5,14 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-redis/redis"
 	"github.com/jinzhu/gorm"
 )
 
 type BanchoServer struct {
 	config *Config
 	db     *gorm.DB
+	rds    *redis.Client
 	router http.Handler
 }
 
@@ -21,14 +23,23 @@ func NewInstance(config *Config) (bancho *BanchoServer, err error) {
 		return
 	}
 
-	// router
-	router := handler()
+	// redis
+	rds := redis.NewClient(&redis.Options{
+		Addr:     config.RedisAddr,
+		Password: config.RedisPass,
+		DB:       config.RedisDB,
+	})
 
 	bancho = &BanchoServer{
 		config: config,
 		db:     db,
-		router: router,
+		rds:    rds,
 	}
+
+	// router
+	router := bancho.Handlers()
+	bancho.router = router
+
 	return
 }
 

@@ -1,16 +1,15 @@
 package bancho
 
 import (
+	"fmt"
 	"net/http"
 	"os"
-
-	"git.iptq.io/nso/bancho/handlers"
 
 	gorrilaHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
-func IndexHandler(w http.ResponseWriter, r *http.Request) {
+func (bancho *BanchoServer) IndexHandler(w http.ResponseWriter, r *http.Request) {
 	header := w.Header()
 
 	header.Set("cho-protocol", "19")
@@ -19,14 +18,19 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	header.Set("content-type", "text/html; charset=utf-8")
 
 	if r.Header.Get("osu-token") == "" && r.Header.Get("user-agent") == "osu!" {
-		handlers.LoginHandler(w, r)
+		bancho.LoginHandler(w, r)
 		return
+	} else if r.Header.Get("osu-token") != "" {
+
 	}
 }
 
-func handler() (router http.Handler) {
+func (bancho *BanchoServer) Handlers() (router http.Handler) {
 	r := mux.NewRouter()
-	r.HandleFunc("/", IndexHandler)
+	r.HandleFunc("/", bancho.IndexHandler)
+	r.HandleFunc("/web/bancho_connect.php", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("fucking hell")
+	})
 	router = gorrilaHandlers.LoggingHandler(os.Stdout, r)
 	return
 }
