@@ -1,7 +1,6 @@
 package bancho
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -28,9 +27,6 @@ func (bancho *BanchoServer) IndexHandler(w http.ResponseWriter, r *http.Request)
 func (bancho *BanchoServer) Handlers() (router http.Handler) {
 	r := mux.NewRouter()
 	r.HandleFunc("/", bancho.IndexHandler)
-	r.HandleFunc("/web/bancho_connect.php", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("fucking hell")
-	})
 	router = gorrilaHandlers.LoggingHandler(os.Stdout, r)
 	return
 }

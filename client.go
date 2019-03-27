@@ -9,6 +9,3 @@ const (
 	Administrator
 	TourneyStuff
 )
-
-type Client struct {
-}

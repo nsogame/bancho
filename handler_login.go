@@ -36,6 +36,7 @@ func (bancho *BanchoServer) LoginHandler(w http.ResponseWriter, r *http.Request)
 		writeErr(err, packets.LoginReply(LoginException), w)
 		return
 	}
+
 	fmt.Println("body:", body)
 
 	lines := bytes.Split(body, []byte("\n"))
