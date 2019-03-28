@@ -5,20 +5,19 @@ import (
 	"net/http"
 	"time"
 
-	"git.iptq.io/nso/common"
-	"github.com/jinzhu/gorm"
+	"github.com/nsogame/common"
 )
 
 type BanchoServer struct {
 	config *Config
-	db     *gorm.DB
+	db     *common.DB
 	rds    *common.RedisAPI
 	router http.Handler
 }
 
 func NewInstance(config *Config) (bancho *BanchoServer, err error) {
 	// db
-	db, err := gorm.Open(config.DbProvider, config.DbConnection)
+	db, err := common.ConnectDB(config.DbProvider, config.DbConnection)
 	if err != nil {
 		return
 	}

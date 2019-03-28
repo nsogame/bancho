@@ -8,9 +8,10 @@ import (
 	"net/http"
 	"strings"
 
-	"git.iptq.io/nso/bancho/packets"
-	"git.iptq.io/nso/common/models"
 	"github.com/google/uuid"
+	"github.com/nsogame/bancho/packets"
+	"github.com/nsogame/common"
+	"github.com/nsogame/common/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -81,18 +82,25 @@ func (bancho *BanchoServer) LoginHandler(w http.ResponseWriter, r *http.Request)
 		writeErr(err, packets.LoginReply(LoginException), w)
 		return
 	}
+	client, err := common.NewClient(choToken.String(), user)
+	if err != nil {
+		writeErr(err, packets.LoginReply(LoginException), w)
+		return
+	}
 	fmt.Println("authenticated!")
+	fmt.Println("client:", client)
 
 	// tell the client the good news
 	buf := new(bytes.Buffer)
 	packets.Write(packets.ProtocolVersion(19), buf)
 	packets.Write(packets.LoginReply(int32(user.ID)), buf)
-	packets.Write(packets.UserPresencePacket{}, buf)
+	packets.Write(packets.UserPresencePacket{Username: user.UsernameCase}, buf)
 	packets.Write(packets.FriendsList(bancho.GetOnlineFriends()), buf)
 	packets.Write(packets.UserPresenceBundle(bancho.GetUserPresences()), buf)
 	packets.Write(bancho.GetUserStats(int32(user.ID)), buf)
 	packets.Write(packets.LoginPermissions(1), buf)
 	packets.Write(packets.SilenceEnd(-1), buf)
+	packets.Write(packets.ChannelJoinSuccess("#nso"), buf)
 	fmt.Println("buf:", buf.Bytes())
 
 	w.Header().Add("cho-token", choToken.String())

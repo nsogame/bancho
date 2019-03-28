@@ -1,6 +1,6 @@
 package bancho
 
-import "git.iptq.io/nso/bancho/packets"
+import "github.com/nsogame/bancho/packets"
 
 func (bancho *BanchoServer) GetUserPresences() []uint32 {
 	return []uint32{}
